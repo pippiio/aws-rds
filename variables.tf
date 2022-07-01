@@ -13,6 +13,8 @@ variable "config" {
     volume_size   = optional(number)
     multi_az      = optional(bool)
 
+    replicate_source_db = optional(string)
+
     username               = optional(string)
     client_security_groups = optional(set(string))
   })
