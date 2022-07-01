@@ -10,8 +10,11 @@ variable "config" {
     db_name       = optional(string)
     port          = optional(number)
     instance_type = optional(string)
+    instance_name = optional(string)
     volume_size   = optional(number)
     multi_az      = optional(bool)
+
+    replicate_source_db = optional(string)
 
     username               = optional(string)
     client_security_groups = optional(set(string))

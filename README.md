@@ -39,6 +39,7 @@ module "rds" {
 |db_name               |string     |nil                |no      |Name of the database|
 |port                  |number     |3306               |no      |Port of the database|
 |instance_type         |string     |db.t3.small        |no      |Instance type of the database ec2|
+|instance_name         |string     |db                 |no      |Name of the databse instance|
 |volume_size           |number     |30                 |no      |Volume size of the database|
 |multi_az              |bool       |false              |no      |Should the Database be multi zone avaliable|
 |username              |string     |admin              |no      |Root username of the database|

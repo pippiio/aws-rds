@@ -11,11 +11,15 @@ output "username" {
 }
 
 output "password_ssm_key" {
-  value = aws_ssm_parameter.this.name
+  value = one(aws_ssm_parameter.this) != null ? one(aws_ssm_parameter.this).name : null
 }
 
 output "db_name" {
   value = aws_db_instance.this.db_name
+}
+
+output "db_arn" {
+  value = aws_db_instance.this.arn
 }
 
 output "client_security_group" {
