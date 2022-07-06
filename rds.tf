@@ -13,7 +13,9 @@ resource "aws_db_instance" "this" {
   multi_az                = local.config.multi_az
   replicate_source_db     = local.config.replicate_source_db
   backup_retention_period = local.backup_retention_period
-
+  backup_window           = local.config.backup_window
+  maintenance_window      = local.config.maintenance_window
+  # kms_key_id              = local.kms_key
 
   tags = local.default_tags
 
@@ -31,25 +33,3 @@ resource "aws_db_subnet_group" "this" {
 
   tags = local.default_tags
 }
-
-# resource "aws_db_option_group" "this" {
-#   name                     =  "${local.name_prefix}option-group"
-#   # option_group_description = "Terraform Option Group"
-#   engine_name              = local.config.engine
-#   major_engine_version     = local.major_engine_version
-
-#   option {
-#     option_name = "MARIADB_AUDIT_PLUGIN"
-
-#     option_settings = [
-#       {
-#         name  = "SERVER_AUDIT_EVENTS"
-#         value = "CONNECT"
-#       },
-#       {
-#         name  = "SERVER_AUDIT_FILE_ROTATIONS"
-#         value = "37"
-#       },
-#     ]
-#   }
-# }
