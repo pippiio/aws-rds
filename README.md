@@ -43,6 +43,10 @@ module "rds" {
 |multi_az              |bool       |false              |no      |Should the Database be multi zone avaliable|
 |username              |string     |admin              |no      |Root username of the database|
 |client_security_groups|set(string)|nil                |no      |Security group ID's for client|
+|backup_window         |string     |nil                |no      |Backup window for Database|
+|maintenance_window    |string     |nil                |no      |Maintaince window for Database|
+|kms_key_id            |string     |nil                |no      |KMS key used for encryption at rest|
+
 
 ### name_prefix:
 |Type        |Default|Required|Description|

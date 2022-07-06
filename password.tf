@@ -8,5 +8,6 @@ resource "aws_ssm_parameter" "this" {
   description = "The RDS master password."
   type        = "SecureString"
   value       = random_password.this.result
+  key_id      = local.kms_key
   tags        = local.default_tags
 }
