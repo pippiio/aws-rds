@@ -1,7 +1,6 @@
 locals {
   create_kms_key = local.config.kms_key_id == null ? 1 : 0
   kms_key        = local.config.kms_key_id
-
 }
 
 data "aws_iam_policy_document" "kms" {
@@ -44,6 +43,6 @@ resource "aws_kms_key" "this" {
 resource "aws_kms_alias" "this" {
   count = local.create_kms_key
 
-  name          = "alias/${local.name_prefix}rds-kms-cmk"
+  name          = "alias/${local.name_prefix}rds-kms"
   target_key_id = aws_kms_key.this.key_id
 }
