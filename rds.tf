@@ -1,12 +1,12 @@
 resource "aws_db_instance" "this" {
   identifier              = "${local.name_prefix}${local.config.instance_name}"
   allocated_storage       = local.config.volume_size
-  engine                  = local.config.engine
-  engine_version          = local.config.engine_version
+  engine                  = local.engine
+  engine_version          = local.engine_version
   instance_class          = local.config.instance_type
   db_name                 = local.config.db_name
-  username                = local.config.username
-  password                = aws_ssm_parameter.this.value
+  username                = local.username
+  password                = local.password
   copy_tags_to_snapshot   = true
   db_subnet_group_name    = aws_db_subnet_group.this.id
   vpc_security_group_ids  = [aws_security_group.instance.id]
