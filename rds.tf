@@ -1,5 +1,5 @@
 resource "aws_db_instance" "this" {
-  identifier              = "${local.name_prefix}db"
+  identifier              = "${local.name_prefix}${local.config.instance_name}"
   allocated_storage       = local.config.volume_size
   engine                  = local.config.engine
   engine_version          = local.config.engine_version
@@ -11,7 +11,8 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name    = aws_db_subnet_group.this.id
   vpc_security_group_ids  = [aws_security_group.instance.id]
   multi_az                = local.config.multi_az
-  backup_retention_period = 35
+  replicate_source_db     = local.config.replicate_source_db
+  backup_retention_period = local.backup_retention_period
   backup_window           = local.config.backup_window
   maintenance_window      = local.config.maintenance_window
   deletion_protection     = true
@@ -25,6 +26,11 @@ resource "aws_db_instance" "this" {
     "general",
     "slowquery",
   ]
+  lifecycle {
+    ignore_changes = [
+      replicate_source_db
+    ]
+  }
 }
 
 resource "aws_db_subnet_group" "this" {
