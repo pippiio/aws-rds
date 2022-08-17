@@ -14,9 +14,17 @@ resource "aws_db_instance" "this" {
   backup_retention_period = 35
   backup_window           = local.config.backup_window
   maintenance_window      = local.config.maintenance_window
+  deletion_protection     = true
   # kms_key_id              = local.kms_key
 
   tags = local.default_tags
+
+  enabled_cloudwatch_logs_exports = [
+    "audit",
+    "error",
+    "general",
+    "slowquery",
+  ]
 }
 
 resource "aws_db_subnet_group" "this" {

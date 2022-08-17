@@ -33,7 +33,7 @@ resource "aws_kms_key" "this" {
 
   description         = "KMS CMK used by RDS Database"
   enable_key_rotation = true
-  policy              = data.aws_iam_policy_document.kms.json
+  policy              = data.aws_iam_policy_document.kms[count.index].json
 
   tags = merge(local.default_tags, {
     "Name" = "${local.name_prefix}rds-kms"
@@ -44,5 +44,5 @@ resource "aws_kms_alias" "this" {
   count = local.create_kms_key
 
   name          = "alias/${local.name_prefix}rds-kms"
-  target_key_id = aws_kms_key.this.key_id
+  target_key_id = aws_kms_key.this[count.index].key_id
 }
