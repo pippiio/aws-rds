@@ -1,17 +1,6 @@
 
 locals {
-  config = defaults(var.config, {
-    port               = 3306
-    engine             = "mysql"
-    engine_version     = "8.0"
-    instance_name      = "db"
-    instance_type      = "db.t3.small"
-    volume_size        = 30
-    multi_az           = false
-    username           = "admin"
-    backup_window      = "01:30-02:59"
-    maintenance_window = "Sat:03:00-Sat:04:00"
-  })
+  config = var.config
 
   username                = local.config.replicate_source_db != null ? null : local.config.username
   password                = local.config.replicate_source_db != null ? null : one(aws_ssm_parameter.this).value
