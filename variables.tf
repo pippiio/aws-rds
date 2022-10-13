@@ -8,7 +8,7 @@ variable "config" {
     db_name                = optional(string, "db")
     port                   = optional(number, 3306)
     instance_type          = optional(string, "db.t3.small")
-    instance_name          = optional(string)
+    instance_name          = optional(string, "db")
     volume_size            = optional(number, 30)
     multi_az               = optional(bool, false)
     replicate_source_db    = optional(string)
