@@ -1,0 +1,132 @@
+---
+name: 'Terraform Validate and Plan'
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-plan-terraform:
+    name: "Validate and Plan Terraform"
+    runs-on: ubuntu-latest
+    if: github.event.repository.name != 'terraform-base-template'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: HashiCorp - Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.0
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        continue-on-error: true
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          if [ -f test/values.tfvars ]; then
+            terraform plan -no-color -var-file=test/values.tfvars
+          else
+            echo "No test/values.tfvars file found, skipping plan"
+          fi
+        continue-on-error: true
+
+      - name: Github Comment
+        id: comment
+        uses: actions/github-script@v6
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
+            // 2. Prepare format of the comment
+            const fmtOutput = `${{ steps.fmt.outcome }}` == "success" ? "✅ Success ✅" : "🛑 Failed 🛑"
+            const initOutput = `${{ steps.init.outcome }}` == "success" ? "✅ Success ✅" : "🛑 Failed 🛑"
+            const validateOutput = `${{ steps.validate.outcome }}` == "success" ? "✅ Success ✅" : "🛑 Failed 🛑"
+            const planOutput = `${{ steps.plan.outcome }}` == "success" ? "✅ Success ✅" : "🛑 Failed 🛑"
+
+            const output = `#### Terraform Format and Style 🖌 \`${ fmtOutput }\`
+            #### Terraform Initialization ⚙️ \`${ initOutput }\`
+            #### Terraform Validation 🤖 \`${ validateOutput }\`
+
+            <details><summary>Validation Output</summary>
+
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
+            
+            #### Terraform Plan 📖 \`${ planOutput }\`
+            
+            <details><summary>Show Plan</summary>
+            
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+            
+            </details>
+            
+            *Pusher: @${{ github.actor }}, Workflow: \`${{ github.workflow }}\`*`;
+            
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+      - name: Fail if errors
+        id: fail
+        run: |
+          if [ "${{ steps.fmt.outcome }}" != "success" ] || [ "${{ steps.init.outcome }}" != "success" ] || [ "${{ steps.validate.outcome }}" != "success" ] || [ "${{ steps.plan.outcome }}" != "success" ]; then
+            exit 1
+          fi
+        continue-on-error: true
+
+  generate-terraform-docs:
+    name: "Generate Terraform Docs"
+    runs-on: ubuntu-latest
+    if: github.event.repository.name != 'terraform-base-template'
+    needs: validate-plan-terraform
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Render terraform docs and push changes back to PR
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
