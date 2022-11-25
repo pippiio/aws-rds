@@ -94,18 +94,13 @@ No modules.
 | [aws_security_group.instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_ssm_parameter.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
 | [random_password.this](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_config"></a> [config](#input\_config) | n/a | <pre>object({<br>    vpc_id                 = string<br>    subnet_ids             = set(string)<br>    engine                 = optional(string, "mysql")<br>    engine_version         = optional(string, "8.0")<br>    db_name                = optional(string, "db")<br>    port                   = optional(number, 3306)<br>    instance_type          = optional(string, "db.t3.small")<br>    instance_name          = optional(string, "db")<br>    volume_size            = optional(number, 30)<br>    multi_az               = optional(bool, false)<br>    replicate_source_db    = optional(string)<br>    username               = optional(string, "admin")<br>    client_security_groups = optional(set(string))<br>    backup_window          = optional(string, "01:30-02:59")<br>    maintenance_window     = optional(string, "Sat:03:00-Sat:04:00")<br>    kms_key_id             = optional(string)<br>  })</pre> | n/a | yes |
-| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | A map of default tags, that will be applied to all resources applicable. | `map(string)` | `{}` | no |
-| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | A prefix that will be used on all named resources. | `string` | `"pippi-"` | no |
 
 ## Outputs
 
