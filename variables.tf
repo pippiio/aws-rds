@@ -6,7 +6,7 @@ variable "config" {
     engine                 = optional(string, "mysql")
     engine_version         = optional(string, "8.0")
     db_name                = optional(string, "db")
-    port                   = optional(number, 3306)
+    port                   = optional(number)
     instance_type          = optional(string, "db.t3.small")
     instance_name          = optional(string, "db")
     volume_size            = optional(number, 30)
@@ -17,5 +17,6 @@ variable "config" {
     backup_window          = optional(string, "01:30-02:59")
     maintenance_window     = optional(string, "Sat:03:00-Sat:04:00")
     kms_key_id             = optional(string)
+    cloudwatch_log_exports = optional(set(string))
   })
 }

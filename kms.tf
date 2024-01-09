@@ -44,12 +44,7 @@ data "aws_iam_policy_document" "kms" {
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
-      values = [
-        "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/audit",
-        "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/error",
-        "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/general",
-        "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/slowquery",
-      ]
+      values   = [for log in local.cloudwatch_logs_exports : "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/${log}"]
     }
   }
 }
