@@ -1,22 +1,23 @@
 resource "aws_db_instance" "this" {
-  identifier              = "${local.name_prefix}${local.config.instance_name}"
-  allocated_storage       = local.config.volume_size
+  identifier              = "${local.name_prefix}${var.config.instance_name}"
+  allocated_storage       = var.config.volume_size
   engine                  = local.engine
-  engine_version          = local.engine_version
-  instance_class          = local.config.instance_type
-  db_name                 = local.config.db_name
+  engine_version          = var.config.engine_version
+  instance_class          = var.config.instance_type
+  db_name                 = var.config.db_name
   username                = local.username
   password                = local.password
   copy_tags_to_snapshot   = true
   db_subnet_group_name    = aws_db_subnet_group.this.id
-  vpc_security_group_ids  = [aws_security_group.instance.id]
-  multi_az                = local.config.multi_az
-  replicate_source_db     = local.config.replicate_source_db
+  vpc_security_group_ids  = setunion([aws_security_group.instance.id], var.config.client_security_groups)
+  multi_az                = var.config.multi_az
+  replicate_source_db     = var.config.replicate_source_db
   backup_retention_period = local.backup_retention_period
-  backup_window           = local.config.backup_window
-  maintenance_window      = local.config.maintenance_window
+  backup_window           = var.config.backup_window
+  maintenance_window      = var.config.maintenance_window
   deletion_protection     = true
-  # kms_key_id              = local.kms_key
+  storage_encrypted       = true
+  kms_key_id              = local.kms_key
 
   tags = local.default_tags
 
@@ -36,7 +37,7 @@ resource "aws_db_instance" "this" {
 resource "aws_db_subnet_group" "this" {
   name        = "${local.name_prefix}db-group"
   description = "DB subnet group for ${local.name_prefix}db"
-  subnet_ids  = local.config.subnet_ids
+  subnet_ids  = var.config.subnet_ids
 
   tags = local.default_tags
 }

@@ -13,7 +13,7 @@ variable "config" {
     multi_az               = optional(bool, false)
     replicate_source_db    = optional(string)
     username               = optional(string, "admin")
-    client_security_groups = optional(set(string))
+    client_security_groups = optional(set(string), [])
     backup_window          = optional(string, "01:30-02:59")
     maintenance_window     = optional(string, "Sat:03:00-Sat:04:00")
     kms_key_id             = optional(string)
