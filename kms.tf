@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "kms" {
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
-      values   = [for log in local.cloudwatch_logs_exports : "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/${log}"]
+      values   = flatten([for log in local.cloudwatch_logs_exports : ["arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/${log}", "arn:aws:logs:${local.region_name}:${local.account_id}:log-group:/aws/rds/instance/${local.name_prefix}${var.config.instance_name}/${log}:*"]])
     }
   }
 }
