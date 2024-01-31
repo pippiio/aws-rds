@@ -4,7 +4,7 @@ resource "random_password" "this" {
 }
 
 resource "aws_ssm_parameter" "this" {
-  count = local.config.replicate_source_db == null ? 1 : 0
+  count = var.config.replicate_source_db == null ? 1 : 0
 
   name        = "/${local.name_prefix}secrets/rds-password"
   description = "The RDS master password."
