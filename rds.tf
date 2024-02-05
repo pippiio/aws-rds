@@ -38,68 +38,14 @@ resource "aws_db_subnet_group" "this" {
 }
 
 resource "aws_db_instance" "replica" {
-  identifier = "${local.name_prefix}${var.config.instance_name}-replica"
+  count = var.config.replicas.count
 
-  instance_class                  = var.config.instance_type
+  identifier                      = "${local.name_prefix}${var.config.instance_name}-replica-${count.index}"
+  instance_class                  = coalesce(var.config.replicas.instance_type, var.config.instance_type)
   replicate_source_db             = aws_db_instance.this.identifier
   storage_encrypted               = true
   skip_final_snapshot             = true
   apply_immediately               = true
   enabled_cloudwatch_logs_exports = local.cloudwatch_logs_exports
+  tags                            = local.default_tags
 }
-
-# resource "aws_db_instance" "replica" {
-#     allocated_storage                     = var.config.volume_size
-#     auto_minor_version_upgrade            = true
-#     # db_name                               = "bigwig"
-#     # db_subnet_group_name                  = "msb-test-db-group"
-#     # delete_automated_backups              = true
-#     # deletion_protection                   = false
-#     enabled_cloudwatch_logs_exports       = [
-#         "audit",
-#         "error",
-#         "general",
-#         "slowquery",
-#     ]
-#     endpoint                              = "dbreplica.chaiz6lyhp90.eu-central-1.rds.amazonaws.com:3306"
-#     engine                                = "mysql"
-#     engine_version                        = "8.0.32"
-#     engine_version_actual                 = "8.0.32"
-#     hosted_zone_id                        = "Z1RLNUO7B9Q6NB"
-#     iam_database_authentication_enabled   = false
-#     id                                    = "dbreplica"
-#     identifier                            = "dbreplica"
-#     instance_class                        = "db.t3.micro"
-#     iops                                  = 0
-#     kms_key_id                            = "arn:aws:kms:eu-central-1:910101673218:key/c1202038-0dff-4308-8458-919f7793de83"
-#     license_model                         = "general-public-license"
-#     listener_endpoint                     = []
-#     maintenance_window                    = "sat:03:00-sat:04:00"
-#     master_user_secret                    = []
-#     max_allocated_storage                 = 1000
-#     monitoring_interval                   = 0
-#     # multi_az                              = true
-#     # name                                  = "bigwig"
-#     # network_type                          = "IPV4"
-#     # option_group_name                     = "default:mysql-8-0"
-#     # parameter_group_name                  = "default.mysql8.0"
-#     # performance_insights_enabled          = false
-#     # performance_insights_retention_period = 0
-#     # port                                  = 3306
-#     # publicly_accessible                   = false
-#     # replicas                              = []
-#     replicate_source_db                   = "msb-test-bigwig-internal"
-#     resource_id                           = "db-MQUJ2YNLQNQ5JLD3YCTKWJR7DA"
-#     security_group_names                  = []
-#     skip_final_snapshot                   = true
-#     status                                = "available"
-#     storage_encrypted                     = true
-#     storage_throughput                    = 0
-#     storage_type                          = "gp2"
-#     tags                                  = {}
-#     tags_all                              = {}
-#     username                              = "admin"
-#     vpc_security_group_ids                = [
-#         "sg-057d0a69d5fdf83d8",
-#     ]
-# }

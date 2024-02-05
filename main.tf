@@ -1,7 +1,7 @@
 
 locals {
   username                = var.config.replicate_source_db != null ? null : var.config.username
-  password                = var.config.replicate_source_db != null ? null : one(aws_ssm_parameter.this).value
+  password                = var.config.replicate_source_db != null ? null : one(aws_ssm_parameter.password).value
   engine                  = var.config.replicate_source_db != null ? null : var.config.engine
   engine_version          = var.config.replicate_source_db != null ? null : var.config.engine_version
   port                    = coalesce(var.config.port, local.engine_default_port[local.engine])

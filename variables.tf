@@ -3,12 +3,12 @@ variable "config" {
   type = object({
     vpc_id                 = string
     subnet_ids             = set(string)
-    engine                 = optional(string, "mysql")
-    engine_version         = optional(string, "8.0")
+    engine                 = string
+    engine_version         = string
     db_name                = optional(string, "db")
     port                   = optional(number)
     instance_type          = optional(string, "db.t3.small")
-    instance_name          = optional(string, "db")
+    instance_name          = optional(string, "database")
     volume_size            = optional(number, 30)
     multi_az               = optional(bool, false)
     replicate_source_db    = optional(string)
@@ -18,5 +18,9 @@ variable "config" {
     maintenance_window     = optional(string, "Sat:03:00-Sat:04:00")
     kms_key_id             = optional(string)
     cloudwatch_log_exports = optional(set(string))
+    replicas = optional(object({
+      count         = optional(number, 0)
+      instance_type = optional(string)
+    }), {})
   })
 }

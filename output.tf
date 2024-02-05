@@ -11,8 +11,9 @@ output "username" {
 }
 
 output "password_ssm_key" {
-  value = one(aws_ssm_parameter.this) != null ? "/${local.name_prefix}secrets/rds-password" : null
+  value = try(aws_ssm_parameter.password[0].name, null)
 }
+
 output "db_name" {
   value = aws_db_instance.this.db_name
 }
