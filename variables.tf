@@ -18,6 +18,7 @@ variable "config" {
     maintenance_window     = optional(string, "Sat:03:00-Sat:04:00")
     kms_key_id             = optional(string)
     cloudwatch_log_exports = optional(set(string))
+    iam_authentication     = optional(bool, false)
     replicas = optional(object({
       count         = optional(number, 0)
       instance_type = optional(string)

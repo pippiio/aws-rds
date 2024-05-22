@@ -47,7 +47,7 @@ module "rds" {
 |backup_window         |string     |nil                |no      |Backup window for Database|
 |maintenance_window    |string     |nil                |no      |Maintaince window for Database|
 |kms_key_id            |string     |nil                |no      |KMS key used for encryption at rest|
-
+|iam_authentication    |bool       |false              |no      |Should the Database enable IAM authentication|
 
 ### name_prefix:
 |Type        |Default|Required|Description|
