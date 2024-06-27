@@ -25,3 +25,7 @@ output "db_arn" {
 output "client_security_group" {
   value = aws_security_group.client.id
 }
+
+output "db_resource_id" {
+  value = aws_db_instance.this.resource_id
+}
