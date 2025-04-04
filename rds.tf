@@ -25,7 +25,8 @@ resource "aws_db_instance" "this" {
 
   lifecycle {
     ignore_changes = [
-      replicate_source_db
+      replicate_source_db,
+      instance_class,
     ]
   }
 }
