@@ -10,8 +10,8 @@ output "username" {
   value = aws_db_instance.this.username
 }
 
-output "password_ssm_key" {
-  value = try(aws_ssm_parameter.password[0].name, null)
+output "password_secret_key" {
+  value = try(aws_secretsmanager_secret.rds_password[0].name, null)
 }
 
 output "db_name" {
